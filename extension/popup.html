@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="popup.css">
+</head>
+
+<body style="min-width: 700px;" class="">
+
+    <script type="text/html" id="template-test">
+        <p>Hello {{name}}</p>
+    </script>
+
+    <script type="text/html" id="template-block">
+        <div class="col-6">
+            <div>
+                <h2 class="">{{title}}</h2>
+                <div class="list-group overflow-auto">
+                    <a href="#" class="list-group-item list-group-item-action py-1">
+                        <p class="mb-0 fw-bold">This is a new article </p>
+                        <small class="text-black-50">1/1/2022</small>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <header class="container-fluid w-100 mb-4" style="height: 80px; background-color: #FFDA6A;">
+        <div class="w-100 h-100 d-flex align-items-center px-2">
+            <h1 class="fw-bold">VKU Notification</h1>
+        </div>
+    </header>
+
+    <div class="container-fluid">
+        <div class="px-2">
+            <ul class="nav nav-tabs"> </ul>
+            <ul class="list-items-in-tab list-group list-group-flush">
+                <!-- <li class="list-group-item">
+                    <p class="mb-0" style="color: #152536">
+                        Thông báo về việc thu các khoản tiền ở Ký túc xá sinh viên Học kỳ I năm học 2022 - 2023
+                    </p class='mb-0'>
+                    <small style="color: #6C757D">2/8/2022</small>
+                </li> -->
+            </ul>
+        </div>
+    </div>
+
+    <script src="js/axios.min.js"></script>
+    <script src="js/template-engine.js"></script>
+    <script src="js/constants.js"></script>
+    <script src="js/script.js"></script>
+</body>
+
+</html>

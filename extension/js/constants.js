@@ -16,4 +16,3 @@ const VKUUrls = [
         url: "https://daotao.vku.udn.vn/vku-thong-bao-khtc",
     },
 ];
-export { VKUUrls };

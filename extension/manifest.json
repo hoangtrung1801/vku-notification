@@ -1,0 +1,22 @@
+{
+    "name": "VKU Notifications",
+    "description": "VKU Notifications",
+    "version": "1.0",
+    "manifest_version": 3,
+    "background": {
+        "service_worker": "js/background.js"
+    },
+    "permissions": [
+        "storage",
+        "notifications",
+        "alarms",
+        "tabs"
+    ],
+    "host_permissions": [
+        "https://example.com/",
+        "https://daotao.vku.udn.vn/*"
+    ],
+    "action": {
+        "default_popup": "popup.html"
+    }
+}
