@@ -16,6 +16,9 @@ const VKUUrls = [
         url: "https://daotao.vku.udn.vn/vku-thong-bao-khtc",
     },
 ];
+const daotaoUrl = "https://daotao.vku.udn.vn";
+const khmtUrl = "https://cs.vku.udn.vn/thong-bao";
+const ktsUrl = "https://de.vku.udn.vn/thong-bao";
 
 chrome.runtime.onInstalled.addListener(() => {
     console.log("Extension is installed");
@@ -53,16 +56,28 @@ chrome.runtime.onInstalled.addListener(() => {
 const fetchData = async () => {
     const fetchFromUrl = (url) => fetch(url).then((res) => res.text());
 
-    let data = [];
-    await Promise.all(VKUUrls.map((item) => fetchFromUrl(item.url))).then(
-        (result) => {
-            for (let i = 0; i < VKUUrls.length; i++)
-                data.push({
-                    ...VKUUrls[i],
-                    data: result[i],
-                });
-            // data[VKUUrls[i].name] = result[i];
-        }
-    );
+    // let data = [];
+    // await Promise.all(VKUUrls.map((item) => fetchFromUrl(item.url))).then(
+    //     (result) => {
+    //         for (let i = 0; i < VKUUrls.length; i++)
+    //             data.push({
+    //                 ...VKUUrls[i],
+    //                 data: result[i],
+    //             });
+    //         // data[VKUUrls[i].name] = result[i];
+    //     }
+    // );
+    // return data;
+
+    let data = {};
+    await Promise.all([
+        fetchFromUrl(daotaoUrl),
+        fetchFromUrl(khmtUrl),
+        // fetchFromUrl(ktsUrl),
+    ]).then((result) => {
+        data["daotao"] = result[0];
+        data["khmt"] = result[1];
+        // data["kts"] = result[2];
+    });
     return data;
 };

@@ -1,7 +1,11 @@
+const daotaoUrl = "https://daotao.vku.udn.vn";
+const khmtUrl = "https://cs.vku.udn.vn/thong-bao";
+const ktsUrl = "https://de.vku.udn.vn/thong-bao";
+
 window.onload = () => {
     let listNoties;
     chrome.storage.local.get(["data"], ({ data }) => {
-        listNoties = getListNoties(data);
+        listNoties = getListNotifies(data);
 
         initNavTab();
         initCurrentTab();
@@ -35,9 +39,8 @@ window.onload = () => {
     const initCurrentTab = () => {
         let listHtml = "";
         const currentList = listNoties.find((list) => list.name === currentTab);
-        console.log(currentList);
 
-        currentList.noties.slice(0, 10).forEach((noty) => {
+        currentList.notifies.forEach((noty) => {
             listHtml += `
                 <li class="list-group-item" style="cursor: pointer">
                     <span class="stretched-link"  data-path="https://daotao.vku.udn.vn${noty.href}"></span>
@@ -93,39 +96,164 @@ const convertSigToName = (name) => {
             return "Kế hoạch tài chính";
         case "ktdbcl":
             return "KT và ĐBCL";
+        case "khmt":
+            return "KHMT";
+        case "kts":
+            return "KTS và TMĐT";
         default:
             return;
     }
 };
 
-const getListNoties = (data) => {
-    // return Object.keys(data).map((name) => ({
-    //     name,
-    //     noties: getInfoFromHtml(data[name]),
-    // }));
-    return data.map((list) => ({
-        name: list.name,
-        url: list.url,
-        noties: getInfoFromHtml(list.data),
-    }));
+const getListNotifies = (data) => {
+    /*
+        daotao
+            dt
+            ctsv
+            khtc
+            ktdbcl
+        khmt
+    */
+    let result = [];
+    const rawDaotao = data["daotao"];
+    result.push(...getListNotifiesFromDaotao(rawDaotao));
+
+    const rawKhmt = data["khmt"];
+    result.push(getNotifiesFromPage(rawKhmt, "khmt", khmtUrl));
+
+    // const rawKts = data["kts"];
+    // result.push(getNotifiesFromPage(rawKts, "kts", ktsUrl));
+
+    /*
+        out: List[]
+
+        List:
+            name: string,
+            url: list.url,
+            noties: Notify[]
+
+        Notify:
+            title
+            href
+            date
+    */
+    return result;
 };
 
-const getInfoFromHtml = (html) => {
+const getListNotifiesFromDaotao = (html) => {
     const parser = new DOMParser();
     const root = parser.parseFromString(html, "text/html");
-    const list = root.querySelectorAll(".item-list li");
 
+    const lists = root.querySelectorAll(".item-list");
+    // DT -> lists[0]
+    // KT DBCL -> lists[1]
+    // CTSV -> lists[4]
+    // KHTC -> lists[5]
+    return [
+        {
+            name: "dt",
+            url: daotaoUrl,
+            notifies: getNotifiesFromDaotao(lists[0]),
+        },
+        {
+            name: "ktdbcl",
+            url: daotaoUrl,
+            notifies: getNotifiesFromDaotao(lists[1]),
+        },
+        {
+            name: "ctsv",
+            url: daotaoUrl,
+            notifies: getNotifiesFromDaotao(lists[4]),
+        },
+        {
+            name: "khtc",
+            url: daotaoUrl,
+            notifies: getNotifiesFromDaotao(lists[5]),
+        },
+    ];
+};
+
+const getNotifiesFromDaotao = (root) => {
+    const list = root.querySelectorAll("li");
     let result = [];
     list.forEach((item) => {
         const href = item.querySelector("a").getAttribute("href");
         const title = item.querySelector("a").textContent.trim();
-        const date = item.querySelector("span").textContent.trim().slice(2);
+        const date = item
+            .querySelector("span")
+            .textContent.trim()
+            .slice(2)
+            .replaceAll("-", "/");
         result.push({
+            title,
+            href: `${daotaoUrl}${href}`,
+            date,
+        });
+    });
+
+    return result;
+};
+
+const getNotifiesFromKhmt = (html) => {
+    const parser = new DOMParser();
+    const root = parser.parseFromString(html, "text/html");
+
+    const list = Array.from(root.querySelectorAll(".panel-default")).slice(
+        0,
+        10
+    );
+
+    let notifies = [];
+    list.forEach((item) => {
+        const title = item.querySelector(".panel-heading").textContent.trim();
+        const date = item
+            .querySelector(".panel-body > div")
+            .textContent.trim()
+            .slice(11)
+            .replaceAll("-", "/");
+        const href = item.querySelector("a").getAttribute("href");
+        notifies.push({
             title,
             href,
             date,
         });
     });
 
-    return result;
+    return {
+        name: "khmt",
+        url: khmtUrl,
+        notifies,
+    };
+};
+
+const getNotifiesFromPage = (html, name, url) => {
+    const parser = new DOMParser();
+    const root = parser.parseFromString(html, "text/html");
+
+    const list = Array.from(root.querySelectorAll(".panel-default")).slice(
+        0,
+        10
+    );
+
+    let notifies = [];
+    list.forEach((item) => {
+        const title = item.querySelector(".panel-heading").textContent.trim();
+        const date = item
+            .querySelector(".panel-body > div")
+            .textContent.trim()
+            .slice(11)
+            .replaceAll("-", "/");
+        const href = item.querySelector("a").getAttribute("href");
+        notifies.push({
+            title,
+            href,
+            date,
+        });
+    });
+
+    return {
+        name,
+        url,
+        notifies,
+    };
 };

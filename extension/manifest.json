@@ -13,8 +13,9 @@
         "tabs"
     ],
     "host_permissions": [
-        "https://example.com/",
-        "https://daotao.vku.udn.vn/*"
+        "https://daotao.vku.udn.vn/*",
+        "https://cs.vku.udn.vn/*",
+        "https://de.vku.udn.vn/*"
     ],
     "action": {
         "default_popup": "popup.html"
