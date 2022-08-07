@@ -3,9 +3,9 @@ const khmtUrl = "https://cs.vku.udn.vn/thong-bao";
 const ktsUrl = "https://de.vku.udn.vn/thong-bao";
 
 window.onload = () => {
-    let listNoties;
-    chrome.storage.local.get(["data"], ({ data }) => {
-        listNoties = getListNotifies(data);
+    let listNotifies;
+    chrome.storage.local.get(["listNotifies"], (data) => {
+        listNotifies = data.listNotifies;
 
         initNavTab();
         initCurrentTab();
@@ -16,7 +16,7 @@ window.onload = () => {
     const navTabs = document.querySelector(".nav-tabs");
 
     const initNavTab = () => {
-        listNoties.forEach((list) => {
+        listNotifies.forEach((list) => {
             let name = convertSigToName(list.name);
             navTabs.innerHTML += `
                 <li class="nav-item" >
@@ -38,7 +38,9 @@ window.onload = () => {
 
     const initCurrentTab = () => {
         let listHtml = "";
-        const currentList = listNoties.find((list) => list.name === currentTab);
+        const currentList = listNotifies.find(
+            (list) => list.name === currentTab
+        );
 
         currentList.notifies.forEach((noty) => {
             listHtml += `

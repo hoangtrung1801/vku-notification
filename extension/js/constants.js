@@ -17,5 +17,7 @@ const VKUUrls = [
     },
 ];
 
+export default VKUUrls;
+
 // const daotaoUrl = "https://daotao.vku.udn.vn";
 // const khmtUrl = "https://cs.vku.udn.vn/thong-bao";
