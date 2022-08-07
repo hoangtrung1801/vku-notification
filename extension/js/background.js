@@ -24,28 +24,33 @@ const ktsUrl = "https://de.vku.udn.vn/thong-bao";
 
 chrome.runtime.onInstalled.addListener(() => {
     console.log("Extension is installed");
-
-    fetchData().then((data) => {
-        const listNotifies = getListNotifies(data);
-        chrome.storage.local.set({ listNotifies });
-    });
+    doCrawl();
 });
 
 chrome.alarms.create("crawl", {
-    periodInMinutes: 0.1,
-    // periodInMinutes: 2,
+    // 12h / 1 crawl
+    periodInMinutes: 60 * 12,
 });
 
 chrome.alarms.onAlarm.addListener((alarm) => {
-    // showNotification();
+    if (alarm.name === "crawl") {
+        doCrawl();
+    }
 });
 
-const showNotification = () => {
+const showNotification = (title, message) => {
     chrome.notifications.create({
         type: "basic",
         iconUrl: "/images/vku.png",
-        title: "notification",
-        message: "this is a notification",
+        title,
+        message,
+    });
+};
+
+const doCrawl = () => {
+    fetchData().then((data) => {
+        const listNotifies = getListNotifies(data);
+        chrome.storage.local.set({ listNotifies });
     });
 };
 
