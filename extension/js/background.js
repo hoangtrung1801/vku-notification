@@ -1,29 +1,41 @@
 import { JSDOM } from "./jsdom.js";
 
-const VKUUrls = [
-    {
-        name: "dt",
-        url: "https://daotao.vku.udn.vn/vku-thong-bao-chung",
-    },
-    {
-        name: "ktdbcl",
-        url: "https://daotao.vku.udn.vn/vku-thong-bao-ktdbcl",
-    },
-    {
-        name: "ctsv",
-        url: "https://daotao.vku.udn.vn/vku-thong-bao-ctsv",
-    },
-    {
-        name: "khtc",
-        url: "https://daotao.vku.udn.vn/vku-thong-bao-khtc",
-    },
-];
 const daotaoUrl = "https://daotao.vku.udn.vn";
 const khmtUrl = "https://cs.vku.udn.vn/thong-bao";
 const ktsUrl = "https://de.vku.udn.vn/thong-bao";
 
+const showNotification = (title, message) => {
+    chrome.notifications.create({
+        type: "basic",
+        iconUrl: "/images/vku.png",
+        title,
+        message,
+    });
+};
+
+const convertSigToName = (name) => {
+    switch (name) {
+        case "ctsv":
+            return "CTSV";
+        case "dt":
+            return "Đào tạo";
+        case "khtc":
+            return "Kế hoạch tài chính";
+        case "ktdbcl":
+            return "KT và ĐBCL";
+        case "khmt":
+            return "KHMT";
+        case "kts":
+            return "KTS và TMĐT";
+        default:
+            return;
+    }
+};
+
 chrome.runtime.onInstalled.addListener(() => {
     console.log("Extension is installed");
+    chrome.action.setBadgeBackgroundColor({ color: "red" });
+    chrome.action.setBadgeText({ text: "1" });
     doCrawl();
 });
 
@@ -38,20 +50,68 @@ chrome.alarms.onAlarm.addListener((alarm) => {
     }
 });
 
-const showNotification = (title, message) => {
-    chrome.notifications.create({
-        type: "basic",
-        iconUrl: "/images/vku.png",
-        title,
-        message,
-    });
-};
-
 const doCrawl = () => {
     fetchData().then((data) => {
         const listNotifies = getListNotifies(data);
-        chrome.storage.local.set({ listNotifies });
+
+        chrome.storage.local.get(["listNotifies"], (data) => {
+            const diff = compareTwoListNotifies(
+                data.listNotifies,
+                listNotifies
+            );
+            console.log("diff", diff);
+            if (diff.length > 0) {
+                chrome.storage.local.set({ listNotifies });
+                diff.forEach((listNotices) => {
+                    const title = `${convertSigToName(listNotices.name)} có ${
+                        listNotices.diffNotifies.length
+                    } thông báo mới!`;
+                    const message = listNotices.diffNotifies
+                        .map((x) => `+ ${x.title}`)
+                        .join("\n");
+                    showNotification(title, message);
+                });
+            }
+        });
     });
+};
+
+const compareTwoListNotifies = (oldListNotifies, newListNotifies) => {
+    console.log(new Date().toISOString());
+    console.log("old", oldListNotifies);
+    console.log("new", newListNotifies);
+
+    // oldListNotifies is empty
+    if (!oldListNotifies)
+        return newListNotifies.map(({ notifies, ...rest }) => ({
+            ...rest,
+            diffNotifies: notifies,
+        }));
+
+    const result = [];
+    for (let i = 0; i < newListNotifies.length; i++) {
+        if (
+            JSON.stringify(oldListNotifies[i].notifies) !==
+            JSON.stringify(newListNotifies[i].notifies)
+        ) {
+            const diffNotifies = newListNotifies[i].notifies.filter((x) => {
+                return !oldListNotifies[i].notifies.some(
+                    (y) => x.title === y.title
+                );
+            });
+
+            // have diff notifies then push into result, otherwise don't push
+            if (diffNotifies.length > 0) {
+                const { notifies, ...rest } = newListNotifies[i];
+                result.push({
+                    ...rest,
+                    diffNotifies: diffNotifies,
+                });
+            }
+        }
+    }
+
+    return result;
 };
 
 const fetchData = async () => {
