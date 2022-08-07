@@ -65,25 +65,6 @@ const fetchData = async () => {
     return data;
 };
 
-const convertSigToName = (name) => {
-    switch (name) {
-        case "ctsv":
-            return "CTSV";
-        case "dt":
-            return "Đào tạo";
-        case "khtc":
-            return "Kế hoạch tài chính";
-        case "ktdbcl":
-            return "KT và ĐBCL";
-        case "khmt":
-            return "KHMT";
-        case "kts":
-            return "KTS và TMĐT";
-        default:
-            return;
-    }
-};
-
 const getListNotifies = (data) => {
     /*
         daotao
@@ -99,9 +80,6 @@ const getListNotifies = (data) => {
 
     const rawKhmt = data["khmt"];
     result.push(getNotifiesFromPage(rawKhmt, "khmt", khmtUrl));
-
-    // const rawKts = data["kts"];
-    // result.push(getNotifiesFromPage(rawKts, "kts", ktsUrl));
 
     /*
         out: List[]
@@ -188,7 +166,7 @@ const getNotifiesFromPage = (html, name, url) => {
     list.forEach((item) => {
         const title = item.querySelector(".panel-heading").textContent.trim();
         const date = item
-            .querySelector(".panel-body > div")
+            .querySelector(".panel-body small")
             .textContent.trim()
             .slice(11)
             .replaceAll("-", "/");
