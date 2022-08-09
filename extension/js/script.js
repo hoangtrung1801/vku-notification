@@ -3,6 +3,7 @@ const khmtUrl = "https://cs.vku.udn.vn/thong-bao";
 const ktsUrl = "https://de.vku.udn.vn/thong-bao";
 
 window.onload = () => {
+    readUnreadNotices();
     let listNotifies;
     chrome.storage.local.get(["listNotifies"], (data) => {
         listNotifies = data.listNotifies;
@@ -106,4 +107,8 @@ const convertSigToName = (name) => {
         default:
             return;
     }
+};
+
+const readUnreadNotices = () => {
+    chrome.storage.local.set({ amountUnreadNotices: 0 });
 };

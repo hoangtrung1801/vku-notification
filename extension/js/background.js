@@ -32,10 +32,11 @@ const convertSigToName = (name) => {
     }
 };
 
+// Listener
 chrome.runtime.onInstalled.addListener(() => {
     console.log("Extension is installed");
-    chrome.action.setBadgeBackgroundColor({ color: "red" });
-    chrome.action.setBadgeText({ text: "1" });
+    // chrome.storage.local.get(["listNotifies"], ({ listNotifies }) => {
+    // });
     doCrawl();
 });
 
@@ -50,6 +51,14 @@ chrome.alarms.onAlarm.addListener((alarm) => {
     }
 });
 
+chrome.storage.onChanged.addListener((changed, areaName) => {
+    if (changed.amountUnreadNotices) {
+        const { newValue, oldValue } = changed.amountUnreadNotices;
+        showUnreadNotices(!!newValue && newValue != 0 ? newValue : "");
+    }
+});
+
+// function
 const doCrawl = () => {
     fetchData().then((data) => {
         const listNotifies = getListNotifies(data);
@@ -59,9 +68,12 @@ const doCrawl = () => {
                 data.listNotifies,
                 listNotifies
             );
+
             console.log("diff", diff);
             if (diff.length > 0) {
                 chrome.storage.local.set({ listNotifies });
+
+                // show notifications
                 diff.forEach((listNotices) => {
                     const title = `${convertSigToName(listNotices.name)} có ${
                         listNotices.diffNotifies.length
@@ -70,6 +82,15 @@ const doCrawl = () => {
                         .map((x) => `+ ${x.title}`)
                         .join("\n");
                     showNotification(title, message);
+                });
+
+                // show badge
+                const amountNotices = diff.reduce(
+                    (prev, cur) => prev + cur.diffNotifies.length,
+                    0
+                );
+                chrome.storage.local.set({
+                    amountUnreadNotices: amountNotices,
                 });
             }
         });
@@ -248,4 +269,12 @@ const getNotifiesFromPage = (html, name, url) => {
         url,
         notifies,
     };
+};
+
+const showUnreadNotices = (amount) => {
+    chrome.action.setBadgeBackgroundColor({ color: "#fdfd96" }, () => {
+        chrome.action.setBadgeText({
+            text: `${amount}`,
+        });
+    });
 };
