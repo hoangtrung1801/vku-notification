@@ -84,6 +84,9 @@ const doCrawl = () => {
                     showNotification(title, message);
                 });
 
+                // save new notices
+                chrome.storage.local.set({ newNotices: diff });
+
                 // show badge
                 const amountNotices = diff.reduce(
                     (prev, cur) => prev + cur.diffNotifies.length,

@@ -3,11 +3,11 @@ const khmtUrl = "https://cs.vku.udn.vn/thong-bao";
 const ktsUrl = "https://de.vku.udn.vn/thong-bao";
 
 window.onload = () => {
-    readUnreadNotices();
-    let listNotifies;
-    chrome.storage.local.get(["listNotifies"], (data) => {
+    readUnreadAmountNotices();
+    let listNotifies, newNotices;
+    chrome.storage.local.get(["listNotifies", "newNotices"], (data) => {
         listNotifies = data.listNotifies;
-        console.log(listNotifies);
+        newNotices = data.newNotices;
 
         initNavTab();
         initCurrentTab();
@@ -40,24 +40,50 @@ window.onload = () => {
 
     const initCurrentTab = () => {
         let listHtml = "";
-        const currentList = listNotifies.find(
+        const currentListId = listNotifies.findIndex(
+            (list) => list.name === currentTab
+        );
+        const currentList = listNotifies[currentListId];
+        const currentListOfNewNotices = newNotices.find(
             (list) => list.name === currentTab
         );
 
         currentList.notifies.forEach((notice) => {
+            // const isNew = newNotices[currentListId].diffNotifies.findIndex((list) => list.)
+            const isNew =
+                currentListOfNewNotices.diffNotifies.findIndex(
+                    (diffNotice) =>
+                        JSON.stringify(diffNotice) === JSON.stringify(notice)
+                ) > -1;
             listHtml += `
-                <li class="list-group-item" style="cursor: pointer">
-                    <span class="stretched-link"  data-path="${notice.href}"></span>
-                    <p class="mb-0" style="color: #152536; font-weight: 600">
+                <li class="list-group-item" style="">
+                    <p class="notice-title mb-0 position-relative" style="color: #152536; font-weight: 600">
+                        <span class="stretched-link" style="cursor: pointer" data-path="${
+                            notice.href
+                        }"></span>
                         ${notice.title}
+                        ${
+                            isNew &&
+                            `<span class="badge rounded-pill bg-danger" style="font-size: 0.6rem">MỚI</span>`
+                        }
                     </p class='mb-0'>
-                    <small style="color: #6C757D">${notice.date}</small>
+                    <div class="d-flex">
+                            <small style="color: #6C757D">${notice.date}</small>
+                        <!--
+                        <small style="color: #6C757D" class="notice-read ms-3 d-flex">
+                            Đánh dấu đã đọc ✓
+                            <span class="ms-1 d-flex align-items-center">
+                                <svg  style="width: 16px; height: 16px; color: #6C757D" xmlns="http://www.w3.org/2000/svg" width="192" height="192" fill="#000000" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"></rect><polyline points="216 72 104 184 48 128" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></polyline></svg>
+                            </span>
+                        </small>
+                        -->
+                    </div>
                 </li>
             `;
         });
 
         listItemInTab.innerHTML = listHtml;
-        document.querySelectorAll(".list-group-item").forEach((item) => {
+        document.querySelectorAll(".notice-title").forEach((item) => {
             item.addEventListener("click", (e) => {
                 onClickNoty(e);
             });
@@ -109,6 +135,10 @@ const convertSigToName = (name) => {
     }
 };
 
-const readUnreadNotices = () => {
+const readUnreadAmountNotices = () => {
     chrome.storage.local.set({ amountUnreadNotices: 0 });
+};
+
+const readSpectificUnreadNotices = (currentTab) => {
+    chrome.storage.local.set({});
 };

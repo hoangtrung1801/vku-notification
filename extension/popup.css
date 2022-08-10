@@ -9,3 +9,11 @@
 .nav-link {
     border-width: 1px 1px 4px 1px !important;
 }
+
+.notice-read {
+    cursor: pointer;
+}
+
+.notice-read:hover {
+    text-decoration: underline;
+}
