@@ -64,7 +64,7 @@ const doCrawl = () => {
         const listNotifies = getListNotifies(data);
 
         chrome.storage.local.get(["listNotifies"], (data) => {
-            const diff = compareTwoListNotifies(
+            const diff = compareOldAndNewListNotices(
                 data.listNotifies,
                 listNotifies
             );
@@ -85,7 +85,14 @@ const doCrawl = () => {
                 });
 
                 // save new notices
-                chrome.storage.local.set({ newNotices: diff });
+                const newNotices = diff.reduce(
+                    (prev, cur) => [
+                        ...prev,
+                        ...cur.diffNotifies.map((e) => e.href),
+                    ],
+                    []
+                );
+                chrome.storage.local.set({ newNotices });
 
                 // show badge
                 const amountNotices = diff.reduce(
@@ -100,7 +107,7 @@ const doCrawl = () => {
     });
 };
 
-const compareTwoListNotifies = (oldListNotifies, newListNotifies) => {
+const compareOldAndNewListNotices = (oldListNotifies, newListNotifies) => {
     console.log(new Date().toISOString());
     console.log("old", oldListNotifies);
     console.log("new", newListNotifies);
@@ -175,7 +182,7 @@ const getListNotifies = (data) => {
 
         List:
             name: string,
-            url: list.url,
+            url: string,
             noties: Notify[]
 
         Notify:

@@ -44,17 +44,9 @@ window.onload = () => {
             (list) => list.name === currentTab
         );
         const currentList = listNotifies[currentListId];
-        const currentListOfNewNotices = newNotices.find(
-            (list) => list.name === currentTab
-        );
 
         currentList.notifies.forEach((notice) => {
-            // const isNew = newNotices[currentListId].diffNotifies.findIndex((list) => list.)
-            const isNew =
-                currentListOfNewNotices.diffNotifies.findIndex(
-                    (diffNotice) =>
-                        JSON.stringify(diffNotice) === JSON.stringify(notice)
-                ) > -1;
+            const isNew = newNotices.some((e) => e === notice.href);
             listHtml += `
                 <li class="list-group-item" style="">
                     <p class="notice-title mb-0 position-relative" style="color: #152536; font-weight: 600">
@@ -63,8 +55,9 @@ window.onload = () => {
                         }"></span>
                         ${notice.title}
                         ${
-                            isNew &&
-                            `<span class="badge rounded-pill bg-danger" style="font-size: 0.6rem">MỚI</span>`
+                            isNew
+                                ? `<span class="badge rounded-pill bg-danger" style="font-size: 0.6rem">MỚI</span>`
+                                : ""
                         }
                     </p class='mb-0'>
                     <div class="d-flex">
@@ -106,6 +99,8 @@ window.onload = () => {
 
     const onClickNoty = (e) => {
         const path = e.target.dataset.path;
+        newNotices = newNotices.filter((e) => e !== path);
+        chrome.storage.local.set({ newNotices });
         createNewTab(path);
     };
 };
