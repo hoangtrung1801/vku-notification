@@ -7,7 +7,7 @@ window.onload = () => {
     let listNotifies, newNotices;
     chrome.storage.local.get(["listNotifies", "newNotices"], (data) => {
         listNotifies = data.listNotifies;
-        newNotices = data.newNotices;
+        newNotices = data.newNotices || [];
 
         initNavTab();
         initCurrentTab();

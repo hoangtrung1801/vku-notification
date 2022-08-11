@@ -32,11 +32,11 @@ const convertSigToName = (name) => {
     }
 };
 
+let firstInstall = true;
+
 // Listener
 chrome.runtime.onInstalled.addListener(() => {
     console.log("Extension is installed");
-    // chrome.storage.local.get(["listNotifies"], ({ listNotifies }) => {
-    // });
     doCrawl();
 });
 
@@ -81,27 +81,32 @@ const doCrawl = () => {
                     const message = listNotices.diffNotifies
                         .map((x) => `+ ${x.title}`)
                         .join("\n");
-                    showNotification(title, message);
+                    if (!firstInstall) showNotification(title, message);
                 });
 
                 // save new notices
-                const newNotices = diff.reduce(
-                    (prev, cur) => [
-                        ...prev,
-                        ...cur.diffNotifies.map((e) => e.href),
-                    ],
-                    []
-                );
-                chrome.storage.local.set({ newNotices });
+                // if it is first installing, then don't save new notices into local
+                if (firstInstall) {
+                    firstInstall = false;
+                } else {
+                    const newNotices = diff.reduce(
+                        (prev, cur) => [
+                            ...prev,
+                            ...cur.diffNotifies.map((e) => e.href),
+                        ],
+                        []
+                    );
+                    chrome.storage.local.set({ newNotices });
 
-                // show badge
-                const amountNotices = diff.reduce(
-                    (prev, cur) => prev + cur.diffNotifies.length,
-                    0
-                );
-                chrome.storage.local.set({
-                    amountUnreadNotices: amountNotices,
-                });
+                    // show badge
+                    const amountNotices = diff.reduce(
+                        (prev, cur) => prev + cur.diffNotifies.length,
+                        0
+                    );
+                    chrome.storage.local.set({
+                        amountUnreadNotices: amountNotices,
+                    });
+                }
             }
         });
     });
