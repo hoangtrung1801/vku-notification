@@ -3,6 +3,12 @@ const khmtUrl = "https://cs.vku.udn.vn/thong-bao";
 const ktsUrl = "https://de.vku.udn.vn/thong-bao";
 
 window.onload = () => {
+    const aboutButton = document.querySelector("#about-button");
+    aboutButton.addEventListener("click", (e) => {
+        e.preventDefault();
+        createNewTab(chrome.runtime.getURL("about.html"));
+    });
+
     readUnreadAmountNotices();
     let listNotifies, newNotices;
     chrome.storage.local.get(["listNotifies", "newNotices"], (data) => {
