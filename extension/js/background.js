@@ -37,9 +37,9 @@ let firstInstall = true;
 // Listener
 chrome.runtime.onInstalled.addListener(() => {
     console.log("Extension is installed");
-    // chrome.tabs.create({
-    //     url: chrome.runtime.getURL("about.html"),
-    // });
+    chrome.tabs.create({
+        url: chrome.runtime.getURL("about.html"),
+    });
     doCrawl();
 });
 

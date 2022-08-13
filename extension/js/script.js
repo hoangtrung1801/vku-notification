@@ -15,6 +15,10 @@ window.onload = () => {
         listNotifies = data.listNotifies;
         newNotices = data.newNotices || [];
 
+        if (!listNotifies) {
+            waitUntilListNotifications();
+        }
+
         initNavTab();
         initCurrentTab();
     });
@@ -113,6 +117,11 @@ window.onload = () => {
         newNotices = newNotices.filter((e) => e !== path);
         chrome.storage.local.set({ newNotices });
         createNewTab(path);
+    };
+
+    const waitUntilListNotifications = () => {
+        document.querySelector(".list-items-in-tab").textContent =
+            "Vui lòng đợi 5s sau đó bật lại để extension có thể tải dữ liệu về!";
     };
 };
 
