@@ -20,7 +20,7 @@
     ],
     "action": {
         "default_popup": "popup.html",
-        "default_icon": "/images/vku.png"
+        "default_icon": "/images/vku-bg.png"
     },
     "icons": {
         "16": "images/vku-16.png",
