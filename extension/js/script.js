@@ -87,6 +87,11 @@ window.onload = () => {
                 onClickNoty(e);
             });
         });
+
+        document.querySelector("#see-all").addEventListener("click", (e) => {
+            e.preventDefault();
+            createNewTab(convertSigToUrl(currentList.name));
+        });
     };
 
     const onClickTab = (e) => {
@@ -131,6 +136,25 @@ const convertSigToName = (name) => {
             return "KHMT";
         case "kts":
             return "KTS và TMĐT";
+        default:
+            return;
+    }
+};
+
+const convertSigToUrl = (name) => {
+    switch (name) {
+        case "ctsv":
+            return "https://daotao.vku.udn.vn/vku-thong-bao-ctsv";
+        case "dt":
+            return "https://daotao.vku.udn.vn/vku-thong-bao-chung";
+        case "khtc":
+            return "https://daotao.vku.udn.vn/vku-thong-bao-khtc";
+        case "ktdbcl":
+            return "https://daotao.vku.udn.vn/vku-thong-bao-ktdbcl";
+        case "khmt":
+            return "https://cs.vku.udn.vn/thong-bao/";
+        case "kts":
+            return "#";
         default:
             return;
     }
