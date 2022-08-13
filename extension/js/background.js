@@ -7,7 +7,7 @@ const ktsUrl = "https://de.vku.udn.vn/thong-bao";
 const showNotification = (title, message) => {
     chrome.notifications.create({
         type: "basic",
-        iconUrl: "/images/vku.png",
+        iconUrl: "/images/vku-128.png",
         title,
         message,
     });

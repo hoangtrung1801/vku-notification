@@ -25,6 +25,8 @@
     "icons": {
         "16": "images/vku-16.png",
         "32": "images/vku-32.png",
-        "48": "images/vku-48.ico"
+        "48": "images/vku-48.png",
+        "64": "images/vku-64.png",
+        "128": "images/vku-128.png"
     }
 }
