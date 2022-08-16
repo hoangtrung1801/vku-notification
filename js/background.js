@@ -32,11 +32,12 @@ const convertSigToName = (name) => {
     }
 };
 
-let firstInstall = true;
+// let firstInstall = true;
 
 // Listener
 chrome.runtime.onInstalled.addListener(() => {
     console.log("Extension is installed");
+    chrome.storage.local.set({ firstInstall: true });
     chrome.tabs.create({
         url: chrome.runtime.getURL("about.html"),
     });
@@ -66,7 +67,9 @@ const doCrawl = () => {
     fetchData().then((data) => {
         const listNotifies = getListNotifies(data);
 
-        chrome.storage.local.get(["listNotifies"], (data) => {
+        chrome.storage.local.get(["listNotifies", "firstInstall"], (data) => {
+            console.log(data);
+            const firstInstall = data.firstInstall;
             const diff = compareOldAndNewListNotices(
                 data.listNotifies,
                 listNotifies
@@ -90,7 +93,8 @@ const doCrawl = () => {
                 // save new notices
                 // if it is first installing, then don't save new notices into local
                 if (firstInstall) {
-                    firstInstall = false;
+                    // firstInstall = false;
+                    chrome.storage.local.set({ firstInstall: false });
                 } else {
                     const newNotices = diff.reduce(
                         (prev, cur) => [
