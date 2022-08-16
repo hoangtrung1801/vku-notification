@@ -14,7 +14,7 @@
 [Hướng dẫn chi tiết](https://docs.google.com/document/d/1O2BxHBuod0sSGjswPo-0QCYIfZsZBVcIar_7K4bwYVs/edit?usp=sharing)
 ## Lưu ý
 
-+ Hiện tại không thể public thông qua Google Web Store vì nó yêu cầu phí, nên mọi người có thể tải extension [tại đây](https://drive.google.com/file/d/1rfgkrvxqQXdCMihcqloEW9GNG16dolG_/view?usp=sharing).
++ Hiện tại không thể public thông qua Google Web Store vì nó yêu cầu phí, nên mọi người có thể tải extension [tại đây](https://drive.google.com/file/d/1fndPB_EP123bFovQ4se3FBtFUiIPnumY/view?usp=sharing).
 + Vì extension hiện tại đang phiên bản 1.0, nên sẽ có nhiều sai sót, trục trặc trong quá trình dùng. Nên nếu gặp vấn đề gì, vui lòng liên hệ với mình qua email hoangtrung1801.2003@gmail.com.
 + Extension không hỗ trợ mobile.
 
