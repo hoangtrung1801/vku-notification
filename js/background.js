@@ -38,9 +38,9 @@ const convertSigToName = (name) => {
 chrome.runtime.onInstalled.addListener(() => {
     console.log("Extension is installed");
     chrome.storage.local.set({ firstInstall: true });
-    chrome.tabs.create({
-        url: chrome.runtime.getURL("about.html"),
-    });
+    // chrome.tabs.create({
+    //     url: chrome.runtime.getURL("about.html"),
+    // });
     doCrawl();
 });
 

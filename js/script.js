@@ -6,7 +6,7 @@ window.onload = () => {
     const aboutButton = document.querySelector("#about-button");
     aboutButton.addEventListener("click", (e) => {
         e.preventDefault();
-        createNewTab(chrome.runtime.getURL("about.html"));
+        createNewTab("https://github.com/hoangtrung1801/vku-notification");
     });
 
     readUnreadAmountNotices();
