@@ -4,8 +4,8 @@
 > Đây là extension được làm ra với mục địch giúp sinh viên VKU có thể xem thông báo từ các phòng đào tạo, công tác sinh viên,... một cách nhanh gọn, tự động nhận thông báo tới desktop để không bỏ lỡ mỗi khi có thông báo từ trường.
 
 ## Hướng dẫn
-+ Tải gói packed extension về máy tính bằng cách clone repository này hoặc tải qua [drive](https://drive.google.com/file/d/1fndPB_EP123bFovQ4se3FBtFUiIPnumY/view?usp=sharing).
-+ Giải nén file (nếu tải qua drive)
++ Tải extension tại đây [v0.2](https://github.com/hoangtrung1801/vku-notification/releases/tag/v0.2)
++ Giải nén file
 + Truy câp vào [chrome://extensions](chrome://extension), bật "developer mode"
 + Kéo thả folder vừa được giải nén vào đó.
 
