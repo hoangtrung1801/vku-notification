@@ -15,7 +15,7 @@ window.onload = () => {
         listNotifies = data.listNotifies;
         newNotices = data.newNotices || [];
 
-        if (!listNotifies) {
+        if (!listNotifies || listNotifies?.length == 0) {
             waitUntilListNotifications();
         }
 

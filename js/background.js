@@ -224,17 +224,17 @@ const getListNotifiesFromDaotao = (html) => {
         {
             name: "ktdbcl",
             url: daotaoUrl,
-            notifies: getNotifiesFromDaotao(lists[1]),
+            notifies: getNotifiesFromDaotao(lists[2]),
         },
         {
             name: "ctsv",
             url: daotaoUrl,
-            notifies: getNotifiesFromDaotao(lists[4]),
+            notifies: getNotifiesFromDaotao(lists[3]),
         },
         {
             name: "khtc",
             url: daotaoUrl,
-            notifies: getNotifiesFromDaotao(lists[5]),
+            notifies: getNotifiesFromDaotao(lists[1]),
         },
     ];
 };
@@ -245,12 +245,21 @@ const getNotifiesFromDaotao = (root) => {
     let result = [];
     list.forEach((item) => {
         const href = item.querySelector("a").getAttribute("href");
-        const title = item.querySelector("a").textContent.trim();
-        const date = item
-            .querySelector("span")
-            .textContent.trim()
-            .slice(2)
-            .replaceAll("-", "/");
+
+        // const title = item.querySelector("a").textContent.trim();
+        let title = item.querySelector("a");
+        if (title?.textContent) {
+            title = title.textContent.trim();
+        } else {
+            title = "";
+        }
+
+        let date = item.querySelector("span");
+        if (date?.textContent) {
+            date = date.textContent.trim().slice(2).replaceAll("-", "/");
+        } else {
+            date = "";
+        }
         result.push({
             title,
             href: `${daotaoUrl}${href}`,
@@ -272,13 +281,23 @@ const getNotifiesFromPage = (html, name, url) => {
 
     let notifies = [];
     list.forEach((item) => {
-        const title = item.querySelector(".panel-heading").textContent.trim();
-        const date = item
-            .querySelector(".panel-body small")
-            .textContent.trim()
-            .slice(11)
-            .replaceAll("-", "/");
+        // const title = item.querySelector(".panel-heading").textContent.trim();
+        let title = item.querySelector(".panel-heading");
+        if (title?.textContent) {
+            title = title.textContent.trim();
+        } else {
+            title = "";
+        }
+
+        let date = item.querySelector(".panel-body small");
+        if (date?.textContent) {
+            date = date.textContent.trim().slice(11).replaceAll("-", "/");
+        } else {
+            date = "";
+        }
+
         const href = item.querySelector("a").getAttribute("href");
+
         notifies.push({
             title,
             href,
